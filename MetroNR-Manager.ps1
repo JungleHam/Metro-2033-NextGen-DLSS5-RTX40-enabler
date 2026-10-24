@@ -56,7 +56,7 @@ $gameChoice.DropDownStyle='DropDownList'
 $gameChoice.Location=New-Object System.Drawing.Point(150,114)
 $gameChoice.Size=New-Object System.Drawing.Size(350,26)
 [void]$gameChoice.Items.Add('Metro 2033 Redux')
-[void]$gameChoice.Items.Add('Metro Last Light Redux (experimental)')
+[void]$gameChoice.Items.Add('Metro Last Light Redux')
 $gameChoice.SelectedIndex=0
 $form.Controls.Add($gameChoice)
 $null = Label 'Game folder' 22 141 600
