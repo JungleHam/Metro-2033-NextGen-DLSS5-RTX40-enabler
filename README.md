@@ -19,12 +19,16 @@ This mod makes that feature work on **NVIDIA RTX 40-series graphics cards**. Nor
 
 ## How to install
 
-1. Download the latest **Windows ZIP** from [Releases](https://github.com/JungleHam/Metro-2033-NextGen-DLSS5-RTX40/releases), when available.
-2. Extract the ZIP somewhere convenient.
-3. Double-click **`Install.cmd`**.
-4. The installer checks your graphics card and finds your Metro game folder. You can select the folder yourself if needed.
-5. Follow the instructions for the **DLSS Neural Rendering file** (explained below).
-6. Start Metro. In the game's graphics settings, select **DLSS Quality** and turn **Neural Rendering ON**.
+1. Open [**Releases**](https://github.com/JungleHam/Metro-2033-NextGen-DLSS5-RTX40/releases) and download **`Metro-NR-RTX40-Setup-v1.0.0-rc2.exe`** when the build is available.
+2. Open the downloaded setup file. The **Metro NR Setup** window opens — no scary black command window.
+3. Choose **Install / update**, and check that it found your Metro game folder.
+4. Choose how to get the compatible DLSS file (see the simple guide below), then click **Install mod**.
+5. Watch the installation progress in the same window. You can see the steps and a live log there.
+6. Start Metro. Set **DLSS Quality** and turn **Neural Rendering ON** in the game's graphics settings.
+
+**Already installed?** Open **Start → Metro NR RTX40 → Install or Uninstall** to manage or remove the mod.
+
+**Prefer the ZIP?** The Windows ZIP contains the same game mod plus manual `Install.cmd` and `Uninstall.cmd` scripts for advanced users.
 
 That's it. **You don't need Advanced Configurator or an extra in-game menu.**
 
@@ -57,11 +61,11 @@ Neural Rendering can be demanding. On our RTX 4070 Ti SUPER test PC at **1440p, 
 
 ## Uninstall or get help
 
-- **To uninstall:** close Metro and run **`Uninstall.cmd`**. It removes this mod's game hook and settings, but leaves your game, the DLSS file and any optional configurator alone.
-- **If Metro won't start or Neural Rendering doesn't work:** run **`Report.cmd`** and attach the resulting report to a [GitHub issue](https://github.com/JungleHam/Metro-2033-NextGen-DLSS5-RTX40/issues).
+- **To uninstall:** open **Metro NR Setup** from the Start menu, select **Uninstall mod**, and click the button. It only removes files the mod can safely identify; your game, DLSS file and optional configurator remain untouched.
+- **If Metro won't start or Neural Rendering doesn't work:** click **Open saved log** in the setup window, or run **`Report.cmd`** for game diagnostics, and attach the results to a [GitHub issue](https://github.com/JungleHam/Metro-2033-NextGen-DLSS5-RTX40/issues).
 - **If another mod already uses `dinput8.dll`:** the installer won't overwrite it without recognizing it as one of our previous installations.
 
-The installer makes backups before changing managed files. It **does not patch your NVIDIA graphics driver**.
+The installer makes backups before changing managed files. It **does not patch your NVIDIA graphics driver**. Logs are saved in **`%LOCALAPPDATA%\\Metro-NR-RTX40\\Logs`**. Progress is shown inside the installer; the moving progress bar indicates activity, not an exact completion percentage.
 
 ## For advanced users
 
