@@ -26,6 +26,18 @@ jobs:
             }
             Write-Host "Syntax OK: $path"
           }
+      - name: Verify Game dropdown has no overlapping label
+        shell: pwsh
+        run: |
+          $source = Get-Content -LiteralPath 'MetroNR-Manager.ps1' -Raw
+          $label = [regex]::Match($source, "Label 'Game' (?<x>\d+) (?<y>\d+) (?<width>\d+)")
+          $combo = [regex]::Match($source, '\$gameChoice.Location=New-Object System.Drawing.Point\((?<x>\d+),(?<y>\d+)\)')
+          $items = [regex]::Matches($source, '\$gameChoice.Items.Add\(')
+          if (-not $label.Success -or -not $combo.Success -or $items.Count -ne 2) { throw 'Could not validate game dropdown layout.' }
+          if (([int]$label.Groups['x'].Value + [int]$label.Groups['width'].Value) -ge [int]$combo.Groups['x'].Value) {
+            throw 'Game label overlays the game dropdown.'
+          }
+          Write-Host 'Game dropdown is not covered by its label.' -ForegroundColor Green
       - name: Compile Windows x64 proxy
         shell: pwsh
         run: .\Build.ps1
@@ -43,8 +55,8 @@ jobs:
       - name: Build single portable EXE (no setup wizard)
         shell: pwsh
         run: |
-          .\tools\Build-Portable.ps1 -Version 'v1.0.0-preview1'
-          if (!(Test-Path -LiteralPath 'build/Metro-NR-RTX40-Portable-v1.0.0-preview1.exe')) {
+          .\tools\Build-Portable.ps1 -Version 'v1.0.0-preview2'
+          if (!(Test-Path -LiteralPath 'build/Metro-NR-RTX40-Portable-v1.0.0-preview2.exe')) {
             throw 'Portable EXE not created'
           }
       - name: Upload build artifact
@@ -53,18 +65,18 @@ jobs:
           name: metro-nr-portable-preview-x64
           path: |
             Metro-NR-RTX40-*-win-x64.zip
-            build/Metro-NR-RTX40-Portable-v1.0.0-preview1.exe
+            build/Metro-NR-RTX40-Portable-v1.0.0-preview2.exe
       - name: Publish portable preview after successful Windows build
         if: github.ref == 'refs/heads/feature/last-light-redux-experimental' && github.event_name == 'push'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: pwsh
         run: |
-          $tag = 'v1.0.0-portable-preview1'
-          $asset = 'build/Metro-NR-RTX40-Portable-v1.0.0-preview1.exe'
+          $tag = 'v1.0.0-portable-preview2'
+          $asset = 'build/Metro-NR-RTX40-Portable-v1.0.0-preview2.exe'
           gh release view $tag *> $null
           if ($LASTEXITCODE -ne 0) {
-            gh release create $tag $asset --target "${{ github.sha }}" --title "Metro Redux NR Portable Preview 1" --notes "One EXE: install, update, or uninstall NR for Metro 2033 Redux and Last Light Redux. No setup-for-setup. Experimental release: keep your known-working backups." --prerelease
+            gh release create $tag $asset --target "${{ github.sha }}" --title "Metro Redux NR Portable Preview 2" --notes "One EXE: install, update, or uninstall NR for Metro 2033 Redux and Last Light Redux. No setup-for-setup. Experimental release: keep your known-working backups." --prerelease
           } else {
             gh release upload $tag $asset --clobber
           }
