@@ -1,10 +1,11 @@
 param(
-    [string]$GameDir = ''
+    [string]$GameDir = '',
+    [ValidateSet('2033','LastLight')][string]$Game = '2033'
 )
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'GamePath.ps1')
 Write-Host '[STEP] Finding your Metro installation...' 
-$GameDir = Resolve-MetroGameDir -Candidate $GameDir
+$GameDir = Resolve-MetroGameDir -Candidate $GameDir -Game $Game
 Set-StrictMode -Version Latest
 if (Get-Process -Name metro -ErrorAction SilentlyContinue) { throw 'Close Metro before uninstalling.' }
 $target = Join-Path $GameDir 'dinput8.dll'
