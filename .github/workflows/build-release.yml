@@ -4,6 +4,9 @@ on:
     branches: [main]
     tags: ['v*']
   workflow_dispatch:
+concurrency:
+  group: metro-nr-release-${{ github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: write
 jobs:
@@ -11,6 +14,18 @@ jobs:
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
+      - name: Validate PowerShell scripts
+        shell: pwsh
+        run: |
+          foreach ($path in @('MetroNR-Manager.ps1','MetroNR-Worker.ps1','Install.ps1','Uninstall.ps1','NRRuntime.ps1','GamePath.ps1','Build.ps1')) {
+            $tokens = $null; $errors = $null
+            [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path $path).Path, [ref]$tokens, [ref]$errors) | Out-Null
+            if ($errors.Count) {
+              $errors | ForEach-Object { Write-Host $_ -ForegroundColor Red }
+              throw "PowerShell syntax validation failed: $path"
+            }
+            Write-Host "Syntax OK: $path"
+          }
       - name: Compile Windows x64 proxy
         shell: pwsh
         run: .\Build.ps1
