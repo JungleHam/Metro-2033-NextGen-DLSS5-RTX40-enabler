@@ -1,4 +1,4 @@
-param([string]$Version = 'v1.0.0-portable-preview1')
+param([string]$Version = 'v1.0.0-preview1')
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 $root = Split-Path -Parent $PSScriptRoot
