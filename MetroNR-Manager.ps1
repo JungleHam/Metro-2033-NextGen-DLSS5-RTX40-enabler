@@ -6,7 +6,7 @@ Add-Type -AssemblyName System.Drawing
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
 $form = New-Object System.Windows.Forms.Form
-$form.Text = 'Metro 2033 Next-Gen - Neural Rendering Setup'
+$form.Text = 'Metro Redux Next-Gen - Neural Rendering Setup'
 $form.StartPosition = 'CenterScreen'
 $form.ClientSize = New-Object System.Drawing.Size(740, 645)
 $form.MinimumSize = New-Object System.Drawing.Size(740, 645)
@@ -50,14 +50,23 @@ $removeChoice.Text='Uninstall mod'; $removeChoice.Location=New-Object System.Dra
 $removeChoice.Size=New-Object System.Drawing.Size(150,23)
 $form.Controls.Add($removeChoice)
 
-$null = Label 'Metro game folder' 22 121 600
-$gamePath = TextBox 22 149 595
-$browseGame = Button 'Browse...' 630 147 88
+$null = Label 'Game' 22 114 150
+$gameChoice = New-Object System.Windows.Forms.ComboBox
+$gameChoice.DropDownStyle='DropDownList'
+$gameChoice.Location=New-Object System.Drawing.Point(150,114)
+$gameChoice.Size=New-Object System.Drawing.Size(350,26)
+[void]$gameChoice.Items.Add('Metro 2033 Redux')
+[void]$gameChoice.Items.Add('Metro Last Light Redux (experimental)')
+$gameChoice.SelectedIndex=0
+$form.Controls.Add($gameChoice)
+$null = Label 'Game folder' 22 141 600
+$gamePath = TextBox 22 166 595
+$browseGame = Button 'Browse...' 630 164 88
 
-$nrLabel = Label 'DLSS Neural Rendering file (310.9.16)' 22 198 640
+$nrLabel = Label 'DLSS Neural Rendering file (310.9.16)' 22 207 640
 $nrSource = New-Object System.Windows.Forms.ComboBox
 $nrSource.DropDownStyle = 'DropDownList'
-$nrSource.Location = New-Object System.Drawing.Point(22,227)
+$nrSource.Location = New-Object System.Drawing.Point(22,235)
 $nrSource.Size = New-Object System.Drawing.Size(695,27)
 [void]$nrSource.Items.Add('Use compatible DLL already in Metro folder (recommended if installed)')
 [void]$nrSource.Items.Add('Browse for a compatible DLL on my PC')
@@ -124,11 +133,15 @@ $browseNR.Add_Click({
     if ($dlg.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) { $extra.Text=$dlg.FileName }
 })
 
-# Auto-detect Metro without showing dialogs, including custom Steam libraries.
-try {
-    . (Join-Path $PSScriptRoot 'GamePath.ps1')
-    $gamePath.Text = Resolve-MetroGameDir -Candidate ''
-} catch { }
+# Find the selected title separately, including non-default Steam libraries.
+. (Join-Path $PSScriptRoot 'GamePath.ps1')
+function Find-SelectedGame {
+    $choice = if ($gameChoice.SelectedIndex -eq 1) { 'LastLight' } else { '2033' }
+    try { $gamePath.Text = Resolve-MetroGameDir -Candidate '' -Game $choice }
+    catch { $gamePath.Text = '' }
+}
+$gameChoice.Add_SelectedIndexChanged({ Find-SelectedGame })
+Find-SelectedGame
 Update-Choices
 
 $timer = New-Object System.Windows.Forms.Timer
@@ -161,10 +174,10 @@ $timer.Add_Tick({
         $progress.Style='Blocks'; $progress.Value=$(if($code -eq 0){100}else{0})
         $start.Enabled=$true; $browseGame.Enabled=$true; $browseNR.Enabled=$true
         $installChoice.Enabled=$true; $removeChoice.Enabled=$true; $nrSource.Enabled=$true
-        $extra.Enabled=$true; $gamePath.Enabled=$true
+        $extra.Enabled=$true; $gamePath.Enabled=$true; $gameChoice.Enabled=$true
         $script:running=$false
         if ($code -eq 0) {
-            $status.Text = $(if($script:operation -eq 'Install'){'Installed successfully. Launch Metro and enable Neural Rendering.'}else{'Mod uninstalled successfully. Your game files were preserved.'})
+            $status.Text = $(if($script:operation -eq 'Install'){'Installed successfully. Launch the selected Metro game and enable Neural Rendering.'}else{'Mod uninstalled successfully. Your game files were preserved.'})
             [System.Windows.Forms.MessageBox]::Show($status.Text,'Metro NR Setup','OK','Information') | Out-Null
         } else {
             $status.Text='Operation failed. Please review the log for details.'
@@ -177,7 +190,13 @@ $timer.Add_Tick({
 $start.Add_Click({
     $game=$gamePath.Text.Trim()
     if (-not $game -or -not (Test-Path -LiteralPath (Join-Path $game 'metro.exe') -PathType Leaf)) {
-        [System.Windows.Forms.MessageBox]::Show('Please select the Metro 2033 Redux game folder containing metro.exe.','Metro NR Setup','OK','Warning') | Out-Null
+        [System.Windows.Forms.MessageBox]::Show('Please select the selected game's folder containing metro.exe.','Metro NR Setup','OK','Warning') | Out-Null
+        return
+    }
+    $chosenGame=if($gameChoice.SelectedIndex -eq 1){'LastLight'}else{'2033'}
+    try { $game = Resolve-MetroGameDir -Candidate $game -Game $chosenGame }
+    catch {
+        [System.Windows.Forms.MessageBox]::Show($_.Exception.Message,'Wrong game folder','OK','Warning') | Out-Null
         return
     }
     $action=$(if($installChoice.Checked){'Install'}else{'Uninstall'})
@@ -195,7 +214,7 @@ $start.Add_Click({
     $script:previousLength=0; $script:finished=$false; $script:operation=$action
     $logBox.Clear(); $status.Text='Starting ' + $action.ToLowerInvariant() + '...'
     $showLog.Enabled=$true
-    $args=@('-NoLogo','-NoProfile','-STA','-NonInteractive','-ExecutionPolicy','Bypass','-WindowStyle','Hidden','-File',(Join-Path $PSScriptRoot 'MetroNR-Worker.ps1'),'-Action',$action,'-GameDir',$game,'-LogPath',$script:logPath)
+    $args=@('-NoLogo','-NoProfile','-STA','-NonInteractive','-ExecutionPolicy','Bypass','-WindowStyle','Hidden','-File',(Join-Path $PSScriptRoot 'MetroNR-Worker.ps1'),'-Action',$action,'-Game',$chosenGame,'-GameDir',$game,'-LogPath',$script:logPath)
     if($action -eq 'Install') {
         $args += @('-NrMode',$mode)
         if($mode -eq 'Browse') { $args += @('-NrDllPath',$extra.Text) }
@@ -221,7 +240,7 @@ $start.Add_Click({
     $progress.Style='Marquee'; $progress.MarqueeAnimationSpeed=30
     $start.Enabled=$false; $browseGame.Enabled=$false; $browseNR.Enabled=$false
     $installChoice.Enabled=$false; $removeChoice.Enabled=$false; $nrSource.Enabled=$false
-    $extra.Enabled=$false; $gamePath.Enabled=$false
+    $extra.Enabled=$false; $gamePath.Enabled=$false; $gameChoice.Enabled=$false
     $timer.Start()
 })
 $showLog.Add_Click({ if($script:logPath -and (Test-Path -LiteralPath $script:logPath)){ Start-Process -FilePath 'notepad.exe' -ArgumentList ('"'+$script:logPath+'"') } })
