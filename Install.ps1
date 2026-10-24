@@ -1,5 +1,6 @@
 param(
     [string]$GameDir = '',
+    [ValidateSet('2033','LastLight')][string]$Game = '2033',
     [switch]$ForceBuild,
     [ValidateSet('Ask','Keep','Browse','Build','Url')][string]$NrMode = 'Ask',
     [string]$NrDllPath = '',
@@ -9,7 +10,7 @@ $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'GamePath.ps1')
 . (Join-Path $PSScriptRoot 'NRRuntime.ps1')
 Write-Host '[STEP] Finding your Metro installation...' 
-$GameDir = Resolve-MetroGameDir -Candidate $GameDir -AllowPrompt
+$GameDir = Resolve-MetroGameDir -Candidate $GameDir -AllowPrompt -Game $Game
 Set-StrictMode -Version Latest
 $root = $PSScriptRoot
 if (!(Test-Path $GameDir -PathType Container)) { throw "Game folder not found: $GameDir" }
@@ -67,7 +68,7 @@ if (!(Test-Path -LiteralPath $dll)) { throw 'No dinput8.dll available.' }
 Write-Host '[STEP] Backing up existing files...' 
 $backup = Join-Path $root ('backups\' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
 New-Item -ItemType Directory -Force $backup | Out-Null
-foreach ($name in @('nvngx_dlssnr.dll','winmm.dll','Metro2033AdvancedConfigurator.ini')) {
+foreach ($name in @('nvngx_dlssnr.dll','winmm.dll','Metro2033AdvancedConfigurator.ini','MetroLastLightAdvancedConfigurator.ini')) {
     $file = Join-Path $GameDir $name
     if (Test-Path $file) { Copy-Item -LiteralPath $file -Destination (Join-Path $backup $name) }
 }
@@ -93,4 +94,5 @@ Write-Host 'Ready! Start Metro, choose DLSS Quality, and enable Neural Rendering
 Write-Host 'Advanced Configurator is optional; it is NOT required.'
 
 # Remember user's installation location for all other scripts.
-Set-Content -LiteralPath (Join-Path $PSScriptRoot '.metro-game-path') -Value $GameDir -Encoding UTF8
+$rememberedPath = if ($Game -eq 'LastLight') { '.metro-lastlight-game-path' } else { '.metro-2033-game-path' }
+Set-Content -LiteralPath (Join-Path $PSScriptRoot $rememberedPath) -Value $GameDir -Encoding UTF8
