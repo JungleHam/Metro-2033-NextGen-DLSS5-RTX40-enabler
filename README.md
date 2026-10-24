@@ -75,3 +75,16 @@ The installer makes backups before changing managed files. It **does not patch y
 - This repository does **not** include NVIDIA's proprietary DLSS DLL. The bridge uses MinHook and is licensed under MIT.
 
 Unofficial community project. Not affiliated with NVIDIA or 4A Games.
+
+
+## Last Light Redux support — experimental preview
+
+Both Metro 2033 Redux and Metro Last Light Redux received native NR menus in the October 2026 Next-Gen update. Both launch as `metro.exe`. Our underlying RTX 40 hook is unchanged; this preview adds a **game selection** to the installer and keeps separate remembered game folders.
+
+**Last Light has not been tested yet.** Select *Metro Last Light Redux (experimental)* in the graphical installer, or run `LastLight-Test.cmd` from a locally built source ZIP. You can use **Browse for DLL** to select your already-patched 310.9.16 `nvngx_dlssnr.dll` from your 2033 folder. Its known-good SHA-256 will be checked before any file is replaced.
+
+Do **not** install if Last Light uses a different DLSS NR runtime; the installer will reject files with an unexpected hash. The project backs up the original file first and does not modify your 2033 installation when Last Light is selected.
+
+Once installed, enable DLSS Quality and NR in Last Light's native settings, load a level, exit and run `LastLight-Report.cmd`. If something breaks, run `LastLight-Uninstall.cmd`. This removes our proxy and marker files but **does not restore the NR DLL**; restore that separately from the created backup if necessary.
+
+Preview installers are available as GitHub Actions artifacts on the `feature/last-light-redux-experimental` branch after a successful build. This preview is **not a stable release**.
