@@ -1,11 +1,14 @@
-param([string]$GameDir = '')
+param([string]$GameDir = '', [ValidateSet('2033','LastLight')][string]$Game = '2033')
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'GamePath.ps1')
-$GameDir = Resolve-MetroGameDir -Candidate $GameDir
-$report = Join-Path $PSScriptRoot 'MetroNR-TestReport.txt'
+$GameDir = Resolve-MetroGameDir -Candidate $GameDir -Game $Game
+$reportDir = Join-Path $env:LOCALAPPDATA 'Metro-NR-RTX40\Reports'
+New-Item -ItemType Directory -Force -Path $reportDir | Out-Null
+$report = Join-Path $reportDir ('MetroNR-' + $Game + '-TestReport.txt')
 $lines = New-Object System.Collections.Generic.List[string]
 function Add([string]$s) { $lines.Add($s) | Out-Null }
 Add ('Metro NR GPU Spoof v1.0.0 diagnostic report - ' + (Get-Date -Format o))
+Add ('Game: ' + $Game)
 Add ('Game folder: ' + $GameDir)
 Add ('Feature18 probe marker=' + (Test-Path (Join-Path $GameDir 'MetroNRFeature18Probe.on')))
 Add ('Direct snippet marker=' + (Test-Path (Join-Path $GameDir 'MetroNRDirectSnippet.on')))
@@ -22,7 +25,7 @@ foreach ($name in @('metro.exe', 'dinput8.dll', 'winmm.dll', 'nvngx_dlssnr.dll')
         }
     } else { Add ('MISSING ' + $name) }
 }
-foreach ($name in @('MetroNRGpuSpoof.log','Metro2033AdvancedConfigurator.log')) {
+foreach ($name in @('MetroNRGpuSpoof.log','Metro2033AdvancedConfigurator.log','MetroLastLightAdvancedConfigurator.log')) {
     $log = Join-Path $GameDir $name
     if (-not (Test-Path -LiteralPath $log)) { Add ('MISSING LOG ' + $name); continue }
     Add ('--- ' + $name + ' (current process session) ---')

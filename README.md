@@ -1,77 +1,71 @@
-# Metro 2033 Redux Next-Gen — Neural Rendering for RTX 40
+# Metro Redux — DLSS 5 Neural Rendering on RTX 40
 
-Make **Metro 2033 Redux** look more modern with improved lighting, shadows and ambient occlusion using the game's built-in **DLSS 5 Neural Rendering**.
+Use **Neural Rendering** in **Metro 2033 Redux** and **Metro Last Light Redux** on NVIDIA **RTX 40-series** graphics cards. It improves lighting and ambient shading, but can significantly reduce FPS.
 
-This mod makes that feature work on **NVIDIA RTX 40-series graphics cards**. Normally, it isn't available on these cards.
+**Status:** Community-made, experimental. Both games were confirmed working on an RTX 4070 Ti SUPER. Other cards and game versions may behave differently.
 
-> **Experimental mod.** Confirmed working on an RTX 4070 Ti SUPER. Other RTX 40 cards haven't been fully tested. It can lower your FPS significantly.
+## Download
 
-## What do I need?
+### [Download Portable Preview 3](https://github.com/JungleHam/Metro-NextGen-DLSS5-RTX40-enabler/releases/tag/v1.0.0-portable-preview3)
 
-**Required:**
-- **Windows** and an **NVIDIA RTX 40-series** graphics card.
-- **Metro 2033 Redux with the October 2026 Next-Gen update**.
-- A compatible **DLSS Neural Rendering file** (`nvngx_dlssnr.dll`, version **310.9.16**). The installer will guide you through this part.
+Download **`Metro-NR-RTX40-Portable-v1.0.0-preview3.exe`** from **Assets**.
 
-**Optional — you do NOT need these just to play:**
-- [**Advanced Configurator**](https://www.nexusmods.com/metro2033redux/mods/57): adds extra controls to fine-tune Neural Rendering. **The game's own Neural Rendering switch works without it.**
-- **Visual Studio / CMake / CUDA**: only needed if you're building the mod yourself or choosing the option to create a compatible DLSS file from the original game file.
+**There is no installation for the installer.** Just double-click the EXE. No ZIP to extract, no extra setup wizard, and no separate installer application left on your PC.
 
-## How to install
+## How to use it
 
-1. Open [**Releases**](https://github.com/JungleHam/Metro-2033-NextGen-DLSS5-RTX40/releases) and download **`Metro-NR-RTX40-Setup-v1.0.0-rc2.exe`** when the build is available.
-2. Open the downloaded setup file. The **Metro NR Setup** window opens — no scary black command window.
-3. Choose **Install / update**, and check that it found your Metro game folder.
-4. Choose how to get the compatible DLSS file (see the simple guide below), then click **Install mod**.
-5. Watch the installation progress in the same window. You can see the steps and a live log there.
-6. Start Metro. Set **DLSS Quality** and turn **Neural Rendering ON** in the game's graphics settings.
+1. Open the downloaded EXE.
+2. Choose **Metro 2033 Redux** or **Metro Last Light Redux**.
+3. Leave **Install / update** selected.
+4. Confirm your game folder and select your DLSS Neural Rendering file option (see below).
+5. Click **Install mod** and watch the progress and messages in the same window.
+6. Start your game, set **DLSS Quality**, and switch **Neural Rendering** **ON** in its graphics settings.
 
-**Already installed?** Open **Start → Metro NR RTX40 → Install or Uninstall** to manage or remove the mod.
+### Which DLL option should I choose?
 
-**Prefer the ZIP?** The Windows ZIP contains the same game mod plus manual `Install.cmd` and `Uninstall.cmd` scripts for advanced users.
+The installer needs a **compatible DLSS Neural Rendering file** named `nvngx_dlssnr.dll` (version **310.9.16**). It verifies the file before using it.
 
-That's it. **You don't need Advanced Configurator or an extra in-game menu.**
-
-### Which DLSS file option should I pick?
-
-The game includes a DLSS file, but on RTX 40 cards it needs a compatible version. The installer checks the file so that it doesn't silently install the wrong one.
-
-| What you have | What to choose |
+| Your situation | Select |
 | --- | --- |
-| You already have a working, compatible file in your Metro folder | **Keep existing file** — the installer checks and keeps it |
-| You downloaded a compatible `nvngx_dlssnr.dll` yourself | **Browse for a file** — select it on your PC |
-| You only have the original game file and the developer tools listed above | **Build from game file** — downloads the OpenNR project and creates the compatible version on your PC |
-| You have a direct HTTPS link to the *correct* compatible DLL | **Download from link** — paste the link; the installer checks the download |
+| You already use a compatible DLL in that game's folder | **Use compatible DLL already in Metro folder** |
+| You have the compatible DLL elsewhere on your PC | **Browse for a compatible DLL** |
+| You have the original game DLL and the required developer tools | **Build from my original game DLL** |
+| You have an HTTPS link to the exact compatible DLL | **Download from an HTTPS link** |
 
-**Important:** The installer **does not currently have a built-in direct download link** for the exact tested Metro DLL. The "Build from game file" option downloads the tools' *source code*, not a ready-to-use DLL, and requires Visual Studio C++ Build Tools, CMake and CUDA 13.4. If those tools are missing, use **Browse for a file** instead.
+**Important:** There is **no automatic one-click download of the patched DLL** yet. The *Build* option downloads source code and requires **Visual Studio C++ Build Tools, CMake, and CUDA 13.4** already installed. The installer does **not** install those tools. The *Browse* option is the simplest choice if you already have the working DLL.
 
-**Do not use the older 310.8.0 RTX 40 DLL from our GTA IV mod.** This Metro mod expects the tested **310.9.16** version.
+The older **310.8.0** DLL from our GTA IV project is **not compatible with this verified Metro installation**.
 
-## Optional: more Neural Rendering settings
+## How to uninstall
 
-Want to adjust the effect beyond the game's normal graphics options?
+Run **the same portable EXE**, choose the correct game, select **Uninstall mod**, and confirm.
 
-Install [**Metro 2033 Advanced Configurator**](https://www.nexusmods.com/metro2033redux/mods/57) separately and use its extra controls.
+The uninstall removes our mod's hook and settings **only if it can verify them**. It deliberately **keeps** the game's `nvngx_dlssnr.dll`, your backups, and other mods. No need to uninstall the portable EXE: you can simply delete your downloaded copy.
 
-**Completely optional.** This mod works on its own.
+## Optional extras
 
-## How much FPS will I lose?
+[**Metro 2033 Advanced Configurator**](https://www.nexusmods.com/metro2033redux/mods/57) offers more Neural Rendering tweaks for Metro 2033. **It is optional**, not required for the normal in-game NR switch to work. It is not bundled with our mod.
 
-Neural Rendering can be demanding. On our RTX 4070 Ti SUPER test PC at **1440p, maximum graphics settings, DLSS Quality**, we saw around **80 FPS during gameplay**. Your results may differ.
+## Troubleshooting
 
-## Uninstall or get help
+- Close the game before installing or uninstalling.
+- If another mod owns `dinput8.dll`, the installer **refuses to overwrite it**.
+- You can view progress and errors inside the portable window with **Open saved log**.
+- Saved logs: `%LOCALAPPDATA%\Metro-NR-RTX40\Logs`
+- Saved backups: `%LOCALAPPDATA%\Metro-NR-RTX40\Backups`
+- For support, [open an issue](https://github.com/JungleHam/Metro-NextGen-DLSS5-RTX40-enabler/issues) and include the saved log. The developer diagnostic tool is `Report.ps1` in the source repository.
 
-- **To uninstall:** open **Metro NR Setup** from the Start menu, select **Uninstall mod**, and click the button. It only removes files the mod can safely identify; your game, DLSS file and optional configurator remain untouched.
-- **If Metro won't start or Neural Rendering doesn't work:** click **Open saved log** in the setup window, or run **`Report.cmd`** for game diagnostics, and attach the results to a [GitHub issue](https://github.com/JungleHam/Metro-2033-NextGen-DLSS5-RTX40/issues).
-- **If another mod already uses `dinput8.dll`:** the installer won't overwrite it without recognizing it as one of our previous installations.
+On the tested RTX 4070 Ti SUPER at 1440p, DLSS Quality, maximum settings, one gameplay test averaged around **80 FPS** with NR enabled. Your results may vary.
 
-The installer makes backups before changing managed files. It **does not patch your NVIDIA graphics driver**. Logs are saved in **`%LOCALAPPDATA%\\Metro-NR-RTX40\\Logs`**. Progress is shown inside the installer; the moving progress bar indicates activity, not an exact completion percentage.
+## Technical notes (optional reading)
 
-## For advanced users
+This is a **game-local mod**. It does not modify your NVIDIA driver. The portable EXE includes our compiled proxy, not NVIDIA's proprietary DLSS DLL.
 
-- Tested compatible DLL: **310.9.16**, SHA-256 `CDFA6C1EC784867182164C7836F324F087B5C9F374D0C9FE46F54999FEABF3ED`.
-- Original Metro DLL SHA-256: `2BC19BC09A7B89DD44F73E2AC0108FCC586E2154BDD0830F242F4F040E28789F`.
-- Source builders: run `Build.ps1` (Visual Studio C++ tools required). See `THIRD_PARTY.md` for upstream projects.
-- This repository does **not** include NVIDIA's proprietary DLSS DLL. The bridge uses MinHook and is licensed under MIT.
+Tested patched `nvngx_dlssnr.dll` **310.9.16** SHA-256:
+`CDFA6C1EC784867182164C7836F324F087B5C9F374D0C9FE46F54999FEABF3ED`.
 
-Unofficial community project. Not affiliated with NVIDIA or 4A Games.
+The source build uses `Build.ps1` and Windows C++ tools. Developers can use `Report.ps1 -Game 2033` or `Report.ps1 -Game LastLight` for detailed game diagnostics. See [third-party notes](THIRD_PARTY.md) for dependencies and upstream projects.
+
+**Portable Preview 3:** cleaned up unused legacy installers, updated the guide for both games, and retained the Preview 2 game-selection layout fix.
+
+Unofficial project; not affiliated with NVIDIA, 4A Games, or Valve.

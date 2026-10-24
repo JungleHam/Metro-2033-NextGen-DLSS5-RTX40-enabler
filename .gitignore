@@ -1,11 +1,15 @@
 build/
+_release/
 backups/
 vendor/
-.metro-game-path
-MetroNR-TestReport.txt
+*.zip
 *.log
 *.bak
 *.obj
 *.exp
 *.lib
 *.pdb
+MetroNR-TestReport.txt
+.metro-game-path
+.metro-2033-game-path
+.metro-lastlight-game-path
