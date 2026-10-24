@@ -1,32 +1,73 @@
-# Metro 2033 Redux Next-Gen — DLSS 5 NR on RTX 40
+# Metro 2033 Redux Next-Gen — Neural Rendering for RTX 40
 
-Experimental, game-local **native DLSS 5 Neural Rendering** bridge for RTX 40-series GPUs. Confirmed working on an **RTX 4070 Ti SUPER** (driver 621.01, Metro October 2026). No driver patches and no bundled NVIDIA binaries.
+Make **Metro 2033 Redux** look more modern with improved lighting, shadows and ambient occlusion using the game's built-in **DLSS 5 Neural Rendering**.
 
-## Install (Windows)
+This mod makes that feature work on **NVIDIA RTX 40-series graphics cards**. Normally, it isn't available on these cards.
 
-1. Download the Windows release ZIP, extract it and run **Install.cmd**. It detects your GPU and Steam game folder (or lets you browse).
-2. Choose how to prepare `nvngx_dlssnr.dll` 310.9.16:
-   - **Already patched:** keep the compatible DLL in the game folder.
-   - **Bring your own:** select a compatible `nvngx_dlssnr.dll` using the file picker.
-   - **Automatic preparation:** download [OpenNR](https://github.com/clshortfuse/openNR) source and reconstruct the RTX 40-compatible DLL from your **original Metro DLL**. Requires **Visual Studio 2022 C++ Build Tools, CMake 3.23+, and CUDA Toolkit 13.4/13.4.3**. It does not download or redistribute NVIDIA's DLL; it uses your game copy.
-   - **HTTPS link:** if you have a direct download URL for the exact compatible build, enter it. The downloaded file must match the tested SHA-256.
-3. Start Metro, set **DLSS Quality**, and enable **Neural Rendering** in the game's native graphics options.
+> **Experimental mod.** Confirmed working on an RTX 4070 Ti SUPER. Other RTX 40 cards haven't been fully tested. It can lower your FPS significantly.
 
-**Advanced Configurator is NOT required**. [Gametism's Advanced Configurator](https://www.nexusmods.com/metro2033redux/mods/57) is optional for extra NR controls. Keep its `winmm.dll` separate; our bridge uses `dinput8.dll`.
+## What do I need?
 
-**Known working patched NR DLL:** 310.9.16.0, SHA-256 `CDFA6C1EC784867182164C7836F324F087B5C9F374D0C9FE46F54999FEABF3ED`.
-Original Metro DLL SHA-256 `2BC19BC09A7B89DD44F73E2AC0108FCC586E2154BDD0830F242F4F040E28789F`. The **310.8 RTX 40 DLL used in the GTA IV installer is NOT the tested Metro runtime**, so the installer will reject it.
+**Required:**
+- **Windows** and an **NVIDIA RTX 40-series** graphics card.
+- **Metro 2033 Redux with the October 2026 Next-Gen update**.
+- A compatible **DLSS Neural Rendering file** (`nvngx_dlssnr.dll`, version **310.9.16**). The installer will guide you through this part.
 
-Uninstall: close Metro and run **Uninstall.cmd**. Our `dinput8.dll` and bridge settings are removed, leaving game files, NR DLL and any optional configurator untouched. Existing managed installation upgrades are backed up; unmanaged `dinput8.dll` files are never overwritten.
+**Optional — you do NOT need these just to play:**
+- [**Advanced Configurator**](https://www.nexusmods.com/metro2033redux/mods/57): adds extra controls to fine-tune Neural Rendering. **The game's own Neural Rendering switch works without it.**
+- **Visual Studio / CMake / CUDA**: only needed if you're building the mod yourself or choosing the option to create a compatible DLSS file from the original game file.
 
-## What it does
+## How to install
 
-The proxy reports a Blackwell-compatible identity for targeted NGX checks, bypasses feature-18 discovery, and routes init/create/evaluate to your patched NR DLL. It does not emulate Blackwell. Our working log observed direct NR init, feature creation and repeated successful evaluation on RTX 4070 Ti SUPER. Main-menu test: NR off 273 FPS, on 80–83 FPS; gameplay ~80 FPS at 1440p, max settings, DLSS Quality (one user's measurements).
+1. Download the latest **Windows ZIP** from [Releases](https://github.com/JungleHam/Metro-2033-NextGen-DLSS5-RTX40/releases), when available.
+2. Extract the ZIP somewhere convenient.
+3. Double-click **`Install.cmd`**.
+4. The installer checks your graphics card and finds your Metro game folder. You can select the folder yourself if needed.
+5. Follow the instructions for the **DLSS Neural Rendering file** (explained below).
+6. Start Metro. In the game's graphics settings, select **DLSS Quality** and turn **Neural Rendering ON**.
 
-The native bridge and the quiet-logging changes are experimental on GPUs other than the tested card; game/driver updates may break it. `Report.cmd` collects diagnostics. `MetroNRVerbose.on` in the game folder enables verbose logging for troubleshooting.
+That's it. **You don't need Advanced Configurator or an extra in-game menu.**
 
-## Build & licensing
+### Which DLSS file option should I pick?
 
-Build locally with `Build.ps1` (MSVC x64) or download the compiled ZIP from GitHub Actions / Releases. Installer never modifies system NVIDIA files. [MinHook](https://github.com/TsudaKageyu/minhook) v1.3.3 is fetched during compilation; the project itself is MIT licensed; OpenNR is an independent upstream project. Proprietary NVIDIA binaries are **not** included. Automatic OpenNR source download uses the upstream main branch; final output must exactly match the known tested SHA-256 before installation. No source-only preparation is completely turnkey if CUDA/MSVC are not already available.
+The game includes a DLSS file, but on RTX 40 cards it needs a compatible version. The installer checks the file so that it doesn't silently install the wrong one.
 
-Unofficial community project, not affiliated with NVIDIA, Valve or 4A Games. Use only with software you own and without multiplayer anti-cheat.
+| What you have | What to choose |
+| --- | --- |
+| You already have a working, compatible file in your Metro folder | **Keep existing file** — the installer checks and keeps it |
+| You downloaded a compatible `nvngx_dlssnr.dll` yourself | **Browse for a file** — select it on your PC |
+| You only have the original game file and the developer tools listed above | **Build from game file** — downloads the OpenNR project and creates the compatible version on your PC |
+| You have a direct HTTPS link to the *correct* compatible DLL | **Download from link** — paste the link; the installer checks the download |
+
+**Important:** The installer **does not currently have a built-in direct download link** for the exact tested Metro DLL. The "Build from game file" option downloads the tools' *source code*, not a ready-to-use DLL, and requires Visual Studio C++ Build Tools, CMake and CUDA 13.4. If those tools are missing, use **Browse for a file** instead.
+
+**Do not use the older 310.8.0 RTX 40 DLL from our GTA IV mod.** This Metro mod expects the tested **310.9.16** version.
+
+## Optional: more Neural Rendering settings
+
+Want to adjust the effect beyond the game's normal graphics options?
+
+Install [**Metro 2033 Advanced Configurator**](https://www.nexusmods.com/metro2033redux/mods/57) separately and use its extra controls.
+
+**Completely optional.** This mod works on its own.
+
+## How much FPS will I lose?
+
+Neural Rendering can be demanding. On our RTX 4070 Ti SUPER test PC at **1440p, maximum graphics settings, DLSS Quality**, we saw around **80 FPS during gameplay**. Your results may differ.
+
+## Uninstall or get help
+
+- **To uninstall:** close Metro and run **`Uninstall.cmd`**. It removes this mod's game hook and settings, but leaves your game, the DLSS file and any optional configurator alone.
+- **If Metro won't start or Neural Rendering doesn't work:** run **`Report.cmd`** and attach the resulting report to a [GitHub issue](https://github.com/JungleHam/Metro-2033-NextGen-DLSS5-RTX40/issues).
+- **If another mod already uses `dinput8.dll`:** the installer won't overwrite it without recognizing it as one of our previous installations.
+
+The installer makes backups before changing managed files. It **does not patch your NVIDIA graphics driver**.
+
+## For advanced users
+
+- Tested compatible DLL: **310.9.16**, SHA-256 `CDFA6C1EC784867182164C7836F324F087B5C9F374D0C9FE46F54999FEABF3ED`.
+- Original Metro DLL SHA-256: `2BC19BC09A7B89DD44F73E2AC0108FCC586E2154BDD0830F242F4F040E28789F`.
+- Source builders: run `Build.ps1` (Visual Studio C++ tools required). See `THIRD_PARTY.md` for upstream projects.
+- This repository does **not** include NVIDIA's proprietary DLSS DLL. The bridge uses MinHook and is licensed under MIT.
+
+Unofficial community project. Not affiliated with NVIDIA or 4A Games.
