@@ -1,11 +1,10 @@
-name: Windows build and release
+name: Windows portable build and release
 on:
   push:
     branches: [main, 'feature/last-light-redux-experimental']
-    tags: ['v*']
   workflow_dispatch:
 concurrency:
-  group: metro-nr-release-${{ github.ref }}
+  group: metro-nr-portable-${{ github.ref }}
   cancel-in-progress: true
 permissions:
   contents: write
@@ -17,7 +16,7 @@ jobs:
       - name: Validate PowerShell scripts
         shell: pwsh
         run: |
-          foreach ($path in @('MetroNR-Manager.ps1','MetroNR-Worker.ps1','Install.ps1','Uninstall.ps1','NRRuntime.ps1','GamePath.ps1','Build.ps1')) {
+          foreach ($path in @('MetroNR-Manager.ps1','MetroNR-Worker.ps1','Install.ps1','Uninstall.ps1','NRRuntime.ps1','GamePath.ps1','Build.ps1','Report.ps1','tools/Build-Portable.ps1')) {
             $tokens = $null; $errors = $null
             [System.Management.Automation.Language.Parser]::ParseFile((Resolve-Path $path).Path, [ref]$tokens, [ref]$errors) | Out-Null
             if ($errors.Count) {
@@ -37,47 +36,46 @@ jobs:
           if (([int]$label.Groups['x'].Value + [int]$label.Groups['width'].Value) -ge [int]$combo.Groups['x'].Value) {
             throw 'Game label overlays the game dropdown.'
           }
-          Write-Host 'Game dropdown is not covered by its label.' -ForegroundColor Green
+          Write-Host 'Game dropdown label does not overlap.' -ForegroundColor Green
       - name: Compile Windows x64 proxy
         shell: pwsh
         run: .\Build.ps1
-      - name: Package user installation
+      - name: Assemble minimal portable payload
         shell: pwsh
         run: |
           $stage = '_release'
           New-Item -ItemType Directory -Force $stage | Out-Null
           New-Item -ItemType Directory -Force (Join-Path $stage 'build') | Out-Null
           Copy-Item build/dinput8.dll (Join-Path $stage 'build/dinput8.dll')
-          $files = @('README.md','LICENSE','THIRD_PARTY.md','GamePath.ps1','NRRuntime.ps1','MetroNR-Manager.ps1','MetroNR-Worker.ps1','Install.cmd','Install.ps1','EnableDirect.cmd','EnableDirect.ps1','DisableDirect.cmd','DisableDirect.ps1','Uninstall.cmd','Uninstall.ps1','Report.cmd','Report.ps1','LastLight-Test.cmd','LastLight-Report.cmd','LastLight-Uninstall.cmd')
+          $files = @('README.md','LICENSE','THIRD_PARTY.md','GamePath.ps1','NRRuntime.ps1','MetroNR-Manager.ps1','MetroNR-Worker.ps1','Install.ps1','Uninstall.ps1')
           foreach ($file in $files) { Copy-Item $file $stage }
-          $safeRef = "${{ github.ref_name }}".Replace("/","-")
-          Compress-Archive -Path "$stage/*" -DestinationPath "Metro-NR-RTX40-$safeRef-win-x64.zip" -Force
-      - name: Build single portable EXE (no setup wizard)
+          if ((Get-ChildItem -Path $stage -Recurse -File | Where-Object { $_.Extension -eq '.cmd' -or $_.Extension -eq '.iss' }).Count) {
+            throw 'Portable payload contains obsolete launcher/setup files'
+          }
+      - name: Build one portable EXE
         shell: pwsh
         run: |
-          .\tools\Build-Portable.ps1 -Version 'v1.0.0-preview2'
-          if (!(Test-Path -LiteralPath 'build/Metro-NR-RTX40-Portable-v1.0.0-preview2.exe')) {
+          .\tools\Build-Portable.ps1 -Version 'v1.0.0-preview3'
+          if (!(Test-Path -LiteralPath 'build/Metro-NR-RTX40-Portable-v1.0.0-preview3.exe')) {
             throw 'Portable EXE not created'
           }
-      - name: Upload build artifact
+      - name: Upload Windows build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: metro-nr-portable-preview-x64
-          path: |
-            Metro-NR-RTX40-*-win-x64.zip
-            build/Metro-NR-RTX40-Portable-v1.0.0-preview2.exe
-      - name: Publish portable preview after successful Windows build
-        if: github.ref == 'refs/heads/feature/last-light-redux-experimental' && github.event_name == 'push'
+          name: metro-nr-portable-preview3-x64
+          path: build/Metro-NR-RTX40-Portable-v1.0.0-preview3.exe
+      - name: Publish Preview 3 from main after successful build
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: pwsh
         run: |
-          $tag = 'v1.0.0-portable-preview2'
-          $asset = 'build/Metro-NR-RTX40-Portable-v1.0.0-preview2.exe'
+          $tag = 'v1.0.0-portable-preview3'
+          $asset = 'build/Metro-NR-RTX40-Portable-v1.0.0-preview3.exe'
           gh release view $tag *> $null
           if ($LASTEXITCODE -ne 0) {
-            gh release create $tag $asset --target "${{ github.sha }}" --title "Metro Redux NR Portable Preview 2" --notes "One EXE: install, update, or uninstall NR for Metro 2033 Redux and Last Light Redux. No setup-for-setup. Experimental release: keep your known-working backups." --prerelease
+            gh release create $tag $asset --target "${{ github.sha }}" --title "Metro Redux NR Portable Preview 3" --notes "One portable EXE supports installation, updates and uninstall for Metro 2033 Redux and Metro Last Light Redux. Removed old setup wrappers, cleaned up repository and README. Includes the working Preview 2 dropdown layout fix. Experimental community release." --prerelease
           } else {
             gh release upload $tag $asset --clobber
           }
-          if ($LASTEXITCODE -ne 0) { throw 'Could not publish portable preview.' }
+          if ($LASTEXITCODE -ne 0) { throw 'Could not publish Portable Preview 3.' }
