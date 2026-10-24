@@ -21,7 +21,7 @@ This mod makes that feature work on **NVIDIA RTX 40-series graphics cards**. Nor
 
 **[Download the portable installer from GitHub Releases](https://github.com/JungleHam/Metro-NextGen-DLSS5-RTX40-enabler/releases)**
 
-Look for **Metro-NR-RTX40-Portable-v1.0.0-preview1.exe** in the latest *Portable Preview* release.
+Look for **Metro-NR-RTX40-Portable-v1.0.0-preview2.exe** in the latest *Portable Preview 2* release.
 
 1. **Download the EXE and double-click it.** No extraction, setup wizard, or installer installation.
 2. Select **Metro 2033 Redux** or **Metro Last Light Redux**.
