@@ -46,8 +46,8 @@ function Resolve-MetroGameDir {
                 }
             }
             foreach ($lib in $libraries) {
-                $game = Join-Path $lib ('steamapps\common\' + $folderName)
-                if (Test-Path -LiteralPath (Join-Path $game 'metro.exe')) { $Candidate = $game; break }
+                $detectedGame = Join-Path $lib ('steamapps\common\' + $folderName)
+                if (Test-Path -LiteralPath (Join-Path $detectedGame 'metro.exe')) { $Candidate = $detectedGame; break }
             }
             if ($Candidate) { break }
         }
