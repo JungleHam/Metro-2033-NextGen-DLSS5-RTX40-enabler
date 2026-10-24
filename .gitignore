@@ -1,0 +1,11 @@
+build/
+backups/
+vendor/
+.metro-game-path
+MetroNR-TestReport.txt
+*.log
+*.bak
+*.obj
+*.exp
+*.lib
+*.pdb
