@@ -50,11 +50,13 @@ $removeChoice.Text='Uninstall mod'; $removeChoice.Location=New-Object System.Dra
 $removeChoice.Size=New-Object System.Drawing.Size(150,23)
 $form.Controls.Add($removeChoice)
 
-$null = Label 'Game' 22 114 150
+# Keep the label completely outside the dropdown. The previous 150 px
+# label covered the leftmost 22 px of a dropdown also starting at x=150.
+$null = Label 'Game' 22 114 100
 $gameChoice = New-Object System.Windows.Forms.ComboBox
 $gameChoice.DropDownStyle='DropDownList'
 $gameChoice.Location=New-Object System.Drawing.Point(150,114)
-$gameChoice.Size=New-Object System.Drawing.Size(350,26)
+$gameChoice.Size=New-Object System.Drawing.Size(567,26)
 [void]$gameChoice.Items.Add('Metro 2033 Redux')
 [void]$gameChoice.Items.Add('Metro Last Light Redux')
 $gameChoice.SelectedIndex=0
