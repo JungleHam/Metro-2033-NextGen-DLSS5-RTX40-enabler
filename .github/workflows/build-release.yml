@@ -40,9 +40,15 @@ jobs:
           path: |
             Metro-NR-RTX40-*-win-x64.zip
             build/Metro-NR-RTX40-Setup-v1.0.0-rc1.exe
-      - name: Publish tag release
-        if: startsWith(github.ref, 'refs/tags/v')
+      - name: Publish RC1 prerelease after successful Windows build
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: pwsh
-        run: gh release create "${{ github.ref_name }}" "Metro-NR-RTX40-${{ github.ref_name }}-win-x64.zip" "build/Metro-NR-RTX40-Setup-v1.0.0-rc1.exe" --title "Metro NR RTX40 ${{ github.ref_name }}" --generate-notes --prerelease
+        run: |
+          $tag = 'v1.0.0-rc1'
+          gh release view $tag *> $null
+          if ($LASTEXITCODE -ne 0) {
+            gh release create $tag "Metro-NR-RTX40-${{ github.ref_name }}-win-x64.zip" "build/Metro-NR-RTX40-Setup-v1.0.0-rc1.exe" --target "${{ github.sha }}" --title "Metro NR RTX40 v1.0.0 RC1" --generate-notes --prerelease
+            if ($LASTEXITCODE -ne 0) { throw 'Failed to publish RC1 prerelease.' }
+          }
