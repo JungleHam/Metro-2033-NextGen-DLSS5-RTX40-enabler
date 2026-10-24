@@ -1,4 +1,4 @@
-# Metro 2033 and Last Light Next Gen — DLSS 5 Neural Rendering on RTX 40
+# Metro 2033 and Last Light - Next Gen Update — DLSS 5 Neural Rendering on RTX 40
 
 Use **Neural Rendering** in **Metro 2033 Redux Next Gen** and **Metro Last Light Redux Next Gen** on NVIDIA **RTX 40-series** graphics cards. Can significantly reduce FPS though.
 
@@ -7,8 +7,6 @@ Use **Neural Rendering** in **Metro 2033 Redux Next Gen** and **Metro Last Light
 ### [Download Portable Preview 3](https://github.com/JungleHam/Metro-NextGen-DLSS5-RTX40-enabler/releases/tag/v1.0.0-portable-preview3)
 
 Download **`Metro-NR-RTX40-Portable-v1.0.0-preview3.exe`** from **Assets**.
-
-**There is no installation for the installer.** Just double-click the EXE. No ZIP to extract, no extra setup wizard, and no separate installer application left on your PC.
 
 ## How to use it
 
@@ -32,7 +30,7 @@ The installer needs a **compatible DLSS Neural Rendering file** named `nvngx_dls
 
 **Important:** There is **no automatic one-click download of the patched DLL** yet. The *Build* option downloads source code and requires **Visual Studio C++ Build Tools, CMake, and CUDA 13.4** already installed. The installer does **not** install those tools. The *Browse* option is the simplest choice if you already have the working DLL.
 
-The older **310.8.0** DLL from our GTA IV project is **not compatible with this verified Metro installation**.
+The older **310.8.0** DLL is assumed **not compatible with this verified Metro installation** so it wasn't tested.
 
 ## How to uninstall
 
@@ -53,7 +51,6 @@ The uninstall removes our mod's hook and settings **only if it can verify them**
 - Saved backups: `%LOCALAPPDATA%\Metro-NR-RTX40\Backups`
 - For support, [open an issue](https://github.com/JungleHam/Metro-NextGen-DLSS5-RTX40-enabler/issues) and include the saved log. The developer diagnostic tool is `Report.ps1` in the source repository.
 
-On the tested RTX 4070 Ti SUPER at 1440p, DLSS Quality, maximum settings, one gameplay test averaged around **80 FPS** with NR enabled. Your results may vary.
 
 ## Technical notes (optional reading)
 
@@ -62,8 +59,8 @@ This is a **game-local mod**. It does not modify your NVIDIA driver. The portabl
 Tested patched `nvngx_dlssnr.dll` **310.9.16** SHA-256:
 `CDFA6C1EC784867182164C7836F324F087B5C9F374D0C9FE46F54999FEABF3ED`.
 
+On the tested RTX 4070 Ti SUPER at 1440p, DLSS Quality, maximum settings, one gameplay test averaged around **80 FPS** with NR enabled. Your results may vary.
+
 The source build uses `Build.ps1` and Windows C++ tools. Developers can use `Report.ps1 -Game 2033` or `Report.ps1 -Game LastLight` for detailed game diagnostics. See [third-party notes](THIRD_PARTY.md) for dependencies and upstream projects.
 
-**Portable Preview 3:** cleaned up unused legacy installers, updated the guide for both games, and retained the Preview 2 game-selection layout fix.
-
-Unofficial project; not affiliated with NVIDIA, 4A Games, or Valve.
+Unofficial project; not affiliated with NVIDIA or 4A Games.
