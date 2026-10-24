@@ -9,3 +9,6 @@ MetroNR-TestReport.txt
 *.exp
 *.lib
 *.pdb
+
+.metro-2033-game-path
+.metro-lastlight-game-path
