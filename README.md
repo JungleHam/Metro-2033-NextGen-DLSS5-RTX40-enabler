@@ -16,6 +16,9 @@ Download **`Metro-NR-RTX40-Portable-v1.0.0-preview3.exe`** from **Assets**.
 4. Confirm your game folder and select your DLSS Neural Rendering file option (see below).
 5. Click **Install mod** and watch the progress and messages in the same window.
 6. Start your game, set **DLSS Quality**, and switch **Neural Rendering** **ON** in its graphics settings.
+## Optional but preferred:
+
+[**Metro 2033 Advanced Configurator**](https://www.nexusmods.com/metro2033redux/mods/57) offers more Neural Rendering tweaks for Metro 2033. **It is optional**, not required for the normal in-game NR switch to work. It is not bundled with our mod.
 
 ### Which DLL option should I choose?
 
@@ -38,9 +41,6 @@ Run **the same portable EXE**, choose the correct game, select **Uninstall mod**
 
 The uninstall removes our mod's hook and settings **only if it can verify them**. It deliberately **keeps** the game's `nvngx_dlssnr.dll`, your backups, and other mods. No need to uninstall the portable EXE: you can simply delete your downloaded copy.
 
-## Optional extras
-
-[**Metro 2033 Advanced Configurator**](https://www.nexusmods.com/metro2033redux/mods/57) offers more Neural Rendering tweaks for Metro 2033. **It is optional**, not required for the normal in-game NR switch to work. It is not bundled with our mod.
 
 ## Technical notes (optional reading)
 
