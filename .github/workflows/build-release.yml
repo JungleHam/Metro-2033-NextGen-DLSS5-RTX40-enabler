@@ -1,7 +1,7 @@
 name: Windows build and release
 on:
   push:
-    branches: [main]
+    branches: [main, 'feature/last-light-redux-experimental']
     tags: ['v*']
   workflow_dispatch:
 concurrency:
@@ -36,7 +36,7 @@ jobs:
           New-Item -ItemType Directory -Force $stage | Out-Null
           New-Item -ItemType Directory -Force (Join-Path $stage 'build') | Out-Null
           Copy-Item build/dinput8.dll (Join-Path $stage 'build/dinput8.dll')
-          $files = @('README.md','LICENSE','THIRD_PARTY.md','GamePath.ps1','NRRuntime.ps1','MetroNR-Manager.ps1','MetroNR-Worker.ps1','Install.cmd','Install.ps1','EnableDirect.cmd','EnableDirect.ps1','DisableDirect.cmd','DisableDirect.ps1','Uninstall.cmd','Uninstall.ps1','Report.cmd','Report.ps1')
+          $files = @('README.md','LICENSE','THIRD_PARTY.md','GamePath.ps1','NRRuntime.ps1','MetroNR-Manager.ps1','MetroNR-Worker.ps1','Install.cmd','Install.ps1','EnableDirect.cmd','EnableDirect.ps1','DisableDirect.cmd','DisableDirect.ps1','Uninstall.cmd','Uninstall.ps1','Report.cmd','Report.ps1','LastLight-Test.cmd','LastLight-Report.cmd','LastLight-Uninstall.cmd')
           foreach ($file in $files) { Copy-Item $file $stage }
           Compress-Archive -Path "$stage/*" -DestinationPath "Metro-NR-RTX40-${{ github.ref_name }}-win-x64.zip" -Force
       - name: Build guided EXE installer (Inno Setup)
@@ -47,23 +47,23 @@ jobs:
           if (!(Test-Path $iscc)) { throw "Missing Inno Setup at $iscc" }
           & $iscc MetroNR-Setup.iss
           if ($LASTEXITCODE -ne 0) { throw "Inno Setup failed: $LASTEXITCODE" }
-          if (!(Test-Path 'build/Metro-NR-RTX40-Setup-v1.0.0-rc2.exe')) { throw 'Installer EXE not created' }
+          if (!(Test-Path 'build/Metro-NR-RTX40-Setup-v1.0.0-lastlight-preview1.exe')) { throw 'Installer EXE not created' }
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: metro-nr-win-x64
+          name: metro-nr-lastlight-preview-x64
           path: |
             Metro-NR-RTX40-*-win-x64.zip
-            build/Metro-NR-RTX40-Setup-v1.0.0-rc2.exe
-      - name: Publish RC2 prerelease after successful Windows build
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+            build/Metro-NR-RTX40-Setup-v1.0.0-lastlight-preview1.exe
+      - name: Publish release only from main after successful Windows build
+        if: false # experimental feature branch: never publish a release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: pwsh
         run: |
           $tag = 'v1.0.0-rc2'
           gh release view $tag *> $null
-          $assets = @("Metro-NR-RTX40-${{ github.ref_name }}-win-x64.zip", "build/Metro-NR-RTX40-Setup-v1.0.0-rc2.exe")
+          $assets = @("Metro-NR-RTX40-${{ github.ref_name }}-win-x64.zip", "build/Metro-NR-RTX40-Setup-v1.0.0-lastlight-preview1.exe")
           if ($LASTEXITCODE -ne 0) {
             gh release create $tag @assets --target "${{ github.sha }}" --title "Metro NR RTX40 v1.0.0 RC2" --generate-notes --prerelease
           } else {
