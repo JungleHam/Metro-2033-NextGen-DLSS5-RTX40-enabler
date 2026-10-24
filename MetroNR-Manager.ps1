@@ -190,7 +190,7 @@ $timer.Add_Tick({
 $start.Add_Click({
     $game=$gamePath.Text.Trim()
     if (-not $game -or -not (Test-Path -LiteralPath (Join-Path $game 'metro.exe') -PathType Leaf)) {
-        [System.Windows.Forms.MessageBox]::Show('Please select the selected game's folder containing metro.exe.','Metro NR Setup','OK','Warning') | Out-Null
+        [System.Windows.Forms.MessageBox]::Show('Please select the folder containing metro.exe for the chosen game.','Metro NR Setup','OK','Warning') | Out-Null
         return
     }
     $chosenGame=if($gameChoice.SelectedIndex -eq 1){'LastLight'}else{'2033'}
