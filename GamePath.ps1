@@ -2,7 +2,13 @@
 function Resolve-MetroGameDir {
     param([string]$Candidate = '', [switch]$AllowPrompt, [ValidateSet('2033','LastLight')][string]$Game = '2033')
     $folderName = if ($Game -eq 'LastLight') { 'Metro Last Light Redux' } else { 'Metro 2033 Redux' }
-    $pathFile = Join-Path $PSScriptRoot $(if($Game -eq 'LastLight'){'.metro-lastlight-game-path'}else{'.metro-2033-game-path'})
+    # Portable builds extract to a temporary folder. Remember both game locations permanently.
+    $settingsDir = Join-Path $env:LOCALAPPDATA 'Metro-NR-RTX40\Preferences'
+    $pathFile = Join-Path $settingsDir $(if($Game -eq 'LastLight'){'.metro-lastlight-game-path'}else{'.metro-2033-game-path'})
+    $legacyPath = Join-Path $PSScriptRoot $(if($Game -eq 'LastLight'){'.metro-lastlight-game-path'}else{'.metro-2033-game-path'})
+    if (-not $Candidate -and -not (Test-Path -LiteralPath $pathFile) -and (Test-Path -LiteralPath $legacyPath)) {
+        $Candidate = (Get-Content -LiteralPath $legacyPath -Raw).Trim()
+    }
     if (-not $Candidate -and (Test-Path -LiteralPath $pathFile)) {
         $Candidate = (Get-Content -LiteralPath $pathFile -Raw).Trim()
     }
