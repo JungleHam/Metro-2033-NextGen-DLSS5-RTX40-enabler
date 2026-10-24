@@ -2,7 +2,9 @@ param([string]$GameDir = '', [ValidateSet('2033','LastLight')][string]$Game = '2
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'GamePath.ps1')
 $GameDir = Resolve-MetroGameDir -Candidate $GameDir -Game $Game
-$report = Join-Path $PSScriptRoot 'MetroNR-TestReport.txt'
+$reportDir = Join-Path $env:LOCALAPPDATA 'Metro-NR-RTX40\Reports'
+New-Item -ItemType Directory -Force -Path $reportDir | Out-Null
+$report = Join-Path $reportDir ('MetroNR-' + $Game + '-TestReport.txt')
 $lines = New-Object System.Collections.Generic.List[string]
 function Add([string]$s) { $lines.Add($s) | Out-Null }
 Add ('Metro NR GPU Spoof v1.0.0 diagnostic report - ' + (Get-Date -Format o))
