@@ -1,8 +1,6 @@
-# Metro Redux — DLSS 5 Neural Rendering on RTX 40
+# Metro 2033 and Last Light Next Gen — DLSS 5 Neural Rendering on RTX 40
 
-Use **Neural Rendering** in **Metro 2033 Redux** and **Metro Last Light Redux** on NVIDIA **RTX 40-series** graphics cards. It improves lighting and ambient shading, but can significantly reduce FPS.
-
-**Status:** Community-made, experimental. Both games were confirmed working on an RTX 4070 Ti SUPER. Other cards and game versions may behave differently.
+Use **Neural Rendering** in **Metro 2033 Redux Next Gen** and **Metro Last Light Redux Next Gen** on NVIDIA **RTX 40-series** graphics cards. Can significantly reduce FPS though.
 
 ## Download
 
