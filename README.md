@@ -42,16 +42,6 @@ The uninstall removes our mod's hook and settings **only if it can verify them**
 
 [**Metro 2033 Advanced Configurator**](https://www.nexusmods.com/metro2033redux/mods/57) offers more Neural Rendering tweaks for Metro 2033. **It is optional**, not required for the normal in-game NR switch to work. It is not bundled with our mod.
 
-## Troubleshooting
-
-- Close the game before installing or uninstalling.
-- If another mod owns `dinput8.dll`, the installer **refuses to overwrite it**.
-- You can view progress and errors inside the portable window with **Open saved log**.
-- Saved logs: `%LOCALAPPDATA%\Metro-NR-RTX40\Logs`
-- Saved backups: `%LOCALAPPDATA%\Metro-NR-RTX40\Backups`
-- For support, [open an issue](https://github.com/JungleHam/Metro-NextGen-DLSS5-RTX40-enabler/issues) and include the saved log. The developer diagnostic tool is `Report.ps1` in the source repository.
-
-
 ## Technical notes (optional reading)
 
 This is a **game-local mod**. It does not modify your NVIDIA driver. The portable EXE includes our compiled proxy, not NVIDIA's proprietary DLSS DLL.
