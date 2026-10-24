@@ -21,7 +21,7 @@ jobs:
           New-Item -ItemType Directory -Force $stage | Out-Null
           New-Item -ItemType Directory -Force (Join-Path $stage 'build') | Out-Null
           Copy-Item build/dinput8.dll (Join-Path $stage 'build/dinput8.dll')
-          $files = @('README.md','LICENSE','THIRD_PARTY.md','GamePath.ps1','NRRuntime.ps1','Install.cmd','Install.ps1','EnableDirect.cmd','EnableDirect.ps1','DisableDirect.cmd','DisableDirect.ps1','Uninstall.cmd','Uninstall.ps1','Report.cmd','Report.ps1')
+          $files = @('README.md','LICENSE','THIRD_PARTY.md','GamePath.ps1','NRRuntime.ps1','MetroNR-Manager.ps1','MetroNR-Worker.ps1','Install.cmd','Install.ps1','EnableDirect.cmd','EnableDirect.ps1','DisableDirect.cmd','DisableDirect.ps1','Uninstall.cmd','Uninstall.ps1','Report.cmd','Report.ps1')
           foreach ($file in $files) { Copy-Item $file $stage }
           Compress-Archive -Path "$stage/*" -DestinationPath "Metro-NR-RTX40-${{ github.ref_name }}-win-x64.zip" -Force
       - name: Build guided EXE installer (Inno Setup)
@@ -32,23 +32,26 @@ jobs:
           if (!(Test-Path $iscc)) { throw "Missing Inno Setup at $iscc" }
           & $iscc MetroNR-Setup.iss
           if ($LASTEXITCODE -ne 0) { throw "Inno Setup failed: $LASTEXITCODE" }
-          if (!(Test-Path 'build/Metro-NR-RTX40-Setup-v1.0.0-rc1.exe')) { throw 'Installer EXE not created' }
+          if (!(Test-Path 'build/Metro-NR-RTX40-Setup-v1.0.0-rc2.exe')) { throw 'Installer EXE not created' }
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: metro-nr-win-x64
           path: |
             Metro-NR-RTX40-*-win-x64.zip
-            build/Metro-NR-RTX40-Setup-v1.0.0-rc1.exe
-      - name: Publish RC1 prerelease after successful Windows build
+            build/Metro-NR-RTX40-Setup-v1.0.0-rc2.exe
+      - name: Publish RC2 prerelease after successful Windows build
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         shell: pwsh
         run: |
-          $tag = 'v1.0.0-rc1'
+          $tag = 'v1.0.0-rc2'
           gh release view $tag *> $null
+          $assets = @("Metro-NR-RTX40-${{ github.ref_name }}-win-x64.zip", "build/Metro-NR-RTX40-Setup-v1.0.0-rc2.exe")
           if ($LASTEXITCODE -ne 0) {
-            gh release create $tag "Metro-NR-RTX40-${{ github.ref_name }}-win-x64.zip" "build/Metro-NR-RTX40-Setup-v1.0.0-rc1.exe" --target "${{ github.sha }}" --title "Metro NR RTX40 v1.0.0 RC1" --generate-notes --prerelease
-            if ($LASTEXITCODE -ne 0) { throw 'Failed to publish RC1 prerelease.' }
+            gh release create $tag @assets --target "${{ github.sha }}" --title "Metro NR RTX40 v1.0.0 RC2" --generate-notes --prerelease
+          } else {
+            gh release upload $tag @assets --clobber
           }
+          if ($LASTEXITCODE -ne 0) { throw 'Failed to publish/update RC2 prerelease assets.' }
