@@ -1,5 +1,5 @@
 #define MyAppName "Metro 2033 Next-Gen DLSS 5 RTX 40"
-#define MyAppVersion "1.0.0-rc1"
+#define MyAppVersion "1.0.0-rc2"
 [Setup]
 AppId={{3AE8A46A-BD3B-43DB-9E27-4BC7F50104B1}
 AppName={#MyAppName}
@@ -12,14 +12,15 @@ DisableDirPage=yes
 DisableProgramGroupPage=yes
 PrivilegesRequired=lowest
 OutputDir=build
-OutputBaseFilename=Metro-NR-RTX40-Setup-v1.0.0-rc1
+OutputBaseFilename=Metro-NR-RTX40-Setup-v1.0.0-rc2
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
 Uninstallable=no
+; The game mod is uninstalled from the graphical manager, with ownership checks.
 [Files]
 Source: "_release\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs ignoreversion
 [Run]
-Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; Parameters: "-NoProfile -STA -ExecutionPolicy Bypass -File ""{app}\Install.ps1"""; Description: "Configure Metro, verify or prepare the NR DLL, and install"; Flags: postinstall waituntilterminated skipifsilent
+Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; Parameters: "-NoLogo -NoProfile -STA -ExecutionPolicy Bypass -WindowStyle Hidden -File ""{app}\MetroNR-Manager.ps1"""; Description: "Open Metro NR Setup (install or uninstall)"; Flags: postinstall nowait skipifsilent runhidden
 [Icons]
-Name: "{autoprograms}\Metro NR RTX40\Uninstall game mod"; Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; Parameters: "-NoProfile -ExecutionPolicy Bypass -File ""{app}\Uninstall.ps1"""
+Name: "{autoprograms}\Metro NR RTX40\Install or Uninstall"; Filename: "{sys}\WindowsPowerShell\v1.0\powershell.exe"; Parameters: "-NoLogo -NoProfile -STA -ExecutionPolicy Bypass -WindowStyle Hidden -File ""{app}\MetroNR-Manager.ps1"""
