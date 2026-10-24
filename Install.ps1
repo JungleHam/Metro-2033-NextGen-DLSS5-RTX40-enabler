@@ -66,7 +66,9 @@ if (!(Test-Path -LiteralPath $dll)) { throw 'No dinput8.dll available.' }
 
 # Never touch the working DLSSNR DLL. Save a copy for safety.
 Write-Host '[STEP] Backing up existing files...' 
-$backup = Join-Path $root ('backups\' + (Get-Date -Format 'yyyyMMdd-HHmmss'))
+# Backups must survive when the portable installer deletes its temporary payload.
+$backupHome = Join-Path $env:LOCALAPPDATA ('Metro-NR-RTX40\Backups\' + $Game)
+$backup = Join-Path $backupHome (Get-Date -Format 'yyyyMMdd-HHmmss')
 New-Item -ItemType Directory -Force $backup | Out-Null
 foreach ($name in @('nvngx_dlssnr.dll','winmm.dll','Metro2033AdvancedConfigurator.ini','MetroLastLightAdvancedConfigurator.ini')) {
     $file = Join-Path $GameDir $name
@@ -94,5 +96,7 @@ Write-Host 'Ready! Start Metro, choose DLSS Quality, and enable Neural Rendering
 Write-Host 'Advanced Configurator is optional; it is NOT required.'
 
 # Remember user's installation location for all other scripts.
+$preferences = Join-Path $env:LOCALAPPDATA 'Metro-NR-RTX40\Preferences'
+New-Item -ItemType Directory -Force -Path $preferences | Out-Null
 $rememberedPath = if ($Game -eq 'LastLight') { '.metro-lastlight-game-path' } else { '.metro-2033-game-path' }
-Set-Content -LiteralPath (Join-Path $PSScriptRoot $rememberedPath) -Value $GameDir -Encoding UTF8
+Set-Content -LiteralPath (Join-Path $preferences $rememberedPath) -Value $GameDir -Encoding UTF8
