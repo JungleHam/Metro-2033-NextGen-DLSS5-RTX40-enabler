@@ -38,7 +38,8 @@ jobs:
           Copy-Item build/dinput8.dll (Join-Path $stage 'build/dinput8.dll')
           $files = @('README.md','LICENSE','THIRD_PARTY.md','GamePath.ps1','NRRuntime.ps1','MetroNR-Manager.ps1','MetroNR-Worker.ps1','Install.cmd','Install.ps1','EnableDirect.cmd','EnableDirect.ps1','DisableDirect.cmd','DisableDirect.ps1','Uninstall.cmd','Uninstall.ps1','Report.cmd','Report.ps1','LastLight-Test.cmd','LastLight-Report.cmd','LastLight-Uninstall.cmd')
           foreach ($file in $files) { Copy-Item $file $stage }
-          Compress-Archive -Path "$stage/*" -DestinationPath "Metro-NR-RTX40-${{ github.ref_name }}-win-x64.zip" -Force
+          $safeRef = "${{ github.ref_name }}".Replace("/","-")
+          Compress-Archive -Path "$stage/*" -DestinationPath "Metro-NR-RTX40-$safeRef-win-x64.zip" -Force
       - name: Build guided EXE installer (Inno Setup)
         shell: pwsh
         run: |
